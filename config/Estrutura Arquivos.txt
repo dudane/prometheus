@@ -1,0 +1,32 @@
+/AutoMaster
+│
+├── /app
+│   ├── /controllers
+│   │   ├── ClienteController.php
+│   │   ├── VeiculoController.php
+│   ├── /models
+│   │   ├── Cliente.php
+│   │   ├── Veiculo.php
+│   ├── /views
+│   │   ├── /clientes
+│   │   │   ├── index.php
+│   │   │   ├── create.php
+│   │   │   ├── edit.php
+│   │   │   ├── show.php
+│   │   ├── /veiculos
+│   │   │   ├── index.php
+│   │   │   ├── create.php
+│   │   │   ├── edit.php
+│   │   │   ├── show.php
+├── /public
+│   ├── /css
+│   ├── /js
+│   ├── index.php
+├── /config
+│   ├── database.php
+├── /core
+│   ├── App.php
+│   ├── Controller.php
+│   ├── Model.php
+└── /routes
+    └── web.php

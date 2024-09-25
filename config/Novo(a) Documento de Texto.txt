@@ -1,0 +1,326 @@
+baseado no requisitos funcionais do sistema, crie as páginas e arquivos em PHP para implementar o sistema, utilize o padrão MVC e faça os códigos de forma organizada e fácil de entender. 
+
+Requisitos:
+
+1. Cadastro de Clientes e Veículos:
+1.1. O sistema deve permitir o cadastro de novos clientes com os seguintes campos obrigatórios: nome completo, CPF/CNPJ, telefone, e-mail e endereço (rua, número, bairro, cidade, estado, CEP). 1.2. O sistema deve permitir o cadastro de veículos vinculados a um cliente específico, com os seguintes campos obrigatórios: marca, modelo, ano, número da placa, número do chassi, cor e quilometragem. 1.3. O sistema deve possibilitar a edição dos dados do cliente e veículo, permitindo atualizações ou correções sempre que necessário. 1.4. O sistema deve garantir a visualização de um histórico completo de serviços realizados e peças adquiridas por veículo, vinculado ao cliente. 1.5. O sistema deve permitir a busca de clientes e veículos por nome, CPF, número da placa ou qualquer outro campo relevante.
+
+=============
+
+
+Para implementar o sistema AutoMaster Gestão utilizando PHP e o padrão MVC (Model-View-Controller), organizaremos o código em pastas estruturadas e criaremos arquivos correspondentes às funcionalidades solicitadas.
+
+Estrutura de Diretórios
+plaintext
+Copiar código
+/AutoMaster
+│
+├── /app
+│   ├── /controllers
+│   │   ├── ClienteController.php
+│   │   ├── VeiculoController.php
+│   ├── /models
+│   │   ├── Cliente.php
+│   │   ├── Veiculo.php
+│   ├── /views
+│   │   ├── /clientes
+│   │   │   ├── index.php
+│   │   │   ├── create.php
+│   │   │   ├── edit.php
+│   │   │   ├── show.php
+│   │   ├── /veiculos
+│   │   │   ├── index.php
+│   │   │   ├── create.php
+│   │   │   ├── edit.php
+│   │   │   ├── show.php
+├── /public
+│   ├── /css
+│   ├── /js
+│   ├── index.php
+├── /config
+│   ├── database.php
+├── /core
+│   ├── App.php
+│   ├── Controller.php
+│   ├── Model.php
+└── /routes
+    └── web.php
+1. Configuração do Banco de Dados (config/database.php)
+php
+Copiar código
+<?php
+class Database {
+    private $host = 'localhost';
+    private $db_name = 'AutoMaster';
+    private $username = 'root';
+    private $password = '';
+    public $conn;
+
+    public function getConnection() {
+        $this->conn = null;
+
+        try {
+            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
+            $this->conn->exec("set names utf8");
+        } catch (PDOException $exception) {
+            echo "Connection error: " . $exception->getMessage();
+        }
+
+        return $this->conn;
+    }
+}
+2. Core MVC (core/Controller.php, core/Model.php, core/App.php)
+php
+Copiar código
+// Controller.php
+<?php
+class Controller {
+    public function loadModel($model) {
+        require_once '../app/models/' . $model . '.php';
+        return new $model();
+    }
+
+    public function render($view, $data = []) {
+        require_once '../app/views/' . $view . '.php';
+    }
+}
+
+// Model.php
+<?php
+class Model {
+    protected $db;
+
+    public function __construct() {
+        $database = new Database();
+        $this->db = $database->getConnection();
+    }
+}
+
+// App.php (basic routing)
+<?php
+require_once '../config/database.php';
+require_once 'Controller.php';
+require_once 'Model.php';
+
+class App {
+    protected $controller = 'ClienteController';
+    protected $method = 'index';
+    protected $params = [];
+
+    public function __construct() {
+        $url = $this->parseUrl();
+
+        if (file_exists('../app/controllers/' . $url[0] . 'Controller.php')) {
+            $this->controller = $url[0] . 'Controller';
+            unset($url[0]);
+        }
+
+        require_once '../app/controllers/' . $this->controller . '.php';
+        $this->controller = new $this->controller;
+
+        if (isset($url[1])) {
+            if (method_exists($this->controller, $url[1])) {
+                $this->method = $url[1];
+                unset($url[1]);
+            }
+        }
+
+        $this->params = $url ? array_values($url) : [];
+        call_user_func_array([$this->controller, $this->method], $this->params);
+    }
+
+    public function parseUrl() {
+        if (isset($_GET['url'])) {
+            return explode('/', filter_var(rtrim($_GET['url'], '/'), FILTER_SANITIZE_URL));
+        }
+    }
+}
+3. Rotas (routes/web.php)
+php
+Copiar código
+<?php
+// URL routing structure
+require_once '../core/App.php';
+$app = new App();
+4. Modelos (app/models/Cliente.php, app/models/Veiculo.php)
+php
+Copiar código
+// Cliente.php
+<?php
+class Cliente extends Model {
+    public function getAll() {
+        $stmt = $this->db->query("SELECT * FROM Cliente");
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public function create($data) {
+        $stmt = $this->db->prepare("INSERT INTO Cliente (nome, cpf_cnpj, telefone, email, endereco) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$data['nome'], $data['cpf_cnpj'], $data['telefone'], $data['email'], $data['endereco']]);
+    }
+
+    public function find($id) {
+        $stmt = $this->db->prepare("SELECT * FROM Cliente WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
+
+    public function update($id, $data) {
+        $stmt = $this->db->prepare("UPDATE Cliente SET nome = ?, cpf_cnpj = ?, telefone = ?, email = ?, endereco = ? WHERE id = ?");
+        $stmt->execute([$data['nome'], $data['cpf_cnpj'], $data['telefone'], $data['email'], $data['endereco'], $id]);
+    }
+
+    public function delete($id) {
+        $stmt = $this->db->prepare("DELETE FROM Cliente WHERE id = ?");
+        $stmt->execute([$id]);
+    }
+}
+
+// Veiculo.php
+<?php
+class Veiculo extends Model {
+    public function create($data) {
+        $stmt = $this->db->prepare("INSERT INTO Veiculo (cliente_id, marca, modelo, ano, placa, chassi, cor, quilometragem) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$data['cliente_id'], $data['marca'], $data['modelo'], $data['ano'], $data['placa'], $data['chassi'], $data['cor'], $data['quilometragem']]);
+    }
+
+    public function getByCliente($cliente_id) {
+        $stmt = $this->db->prepare("SELECT * FROM Veiculo WHERE cliente_id = ?");
+        $stmt->execute([$cliente_id]);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+}
+5. Controladores (app/controllers/ClienteController.php, app/controllers/VeiculoController.php)
+php
+Copiar código
+// ClienteController.php
+<?php
+class ClienteController extends Controller {
+    private $clienteModel;
+
+    public function __construct() {
+        $this->clienteModel = $this->loadModel('Cliente');
+    }
+
+    public function index() {
+        $clientes = $this->clienteModel->getAll();
+        $this->render('clientes/index', ['clientes' => $clientes]);
+    }
+
+    public function create() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = [
+                'nome' => $_POST['nome'],
+                'cpf_cnpj' => $_POST['cpf_cnpj'],
+                'telefone' => $_POST['telefone'],
+                'email' => $_POST['email'],
+                'endereco' => $_POST['endereco'],
+            ];
+            $this->clienteModel->create($data);
+            header('Location: /clientes');
+        }
+        $this->render('clientes/create');
+    }
+
+    public function edit($id) {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = [
+                'nome' => $_POST['nome'],
+                'cpf_cnpj' => $_POST['cpf_cnpj'],
+                'telefone' => $_POST['telefone'],
+                'email' => $_POST['email'],
+                'endereco' => $_POST['endereco'],
+            ];
+            $this->clienteModel->update($id, $data);
+            header('Location: /clientes');
+        }
+        $cliente = $this->clienteModel->find($id);
+        $this->render('clientes/edit', ['cliente' => $cliente]);
+    }
+
+    public function delete($id) {
+        $this->clienteModel->delete($id);
+        header('Location: /clientes');
+    }
+}
+
+// VeiculoController.php
+<?php
+class VeiculoController extends Controller {
+    private $veiculoModel;
+
+    public function __construct() {
+        $this->veiculoModel = $this->loadModel('Veiculo');
+    }
+
+    public function create($cliente_id) {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $data = [
+                'cliente_id' => $cliente_id,
+                'marca' => $_POST['marca'],
+                'modelo' => $_POST['modelo'],
+                'ano' => $_POST['ano'],
+                'placa' => $_POST['placa'],
+                'chassi' => $_POST['chassi'],
+                'cor' => $_POST['cor'],
+                'quilometragem' => $_POST['quilometragem'],
+            ];
+            $this->veiculoModel->create($data);
+            header('Location: /clientes/show/' . $cliente_id);
+        }
+        $this->render('veiculos/create');
+    }
+
+    public function show($cliente_id) {
+        $veiculos = $this->veiculoModel->getByCliente($cliente_id);
+        $this->render('veiculos/show', ['veiculos' => $veiculos]);
+    }
+}
+6. Páginas de Visualização (Exemplo create.php, index.php)
+app/views/clientes/create.php
+php
+Copiar código
+<form method="POST" action="/clientes/create">
+    <label for="nome">Nome Completo:</label>
+    <input type="text" name="nome" required>
+    
+    <label for="cpf_cnpj">CPF/CNPJ:</label>
+    <input type="text" name="cpf_cnpj" required>
+    
+    <label for="telefone">Telefone:</label>
+    <input type="text" name="telefone" required>
+    
+    <label for="email">E-mail:</label>
+    <input type="email" name="email" required>
+    
+    <label for="endereco">Endereço:</label>
+    <textarea name="endereco" required></textarea>
+    
+    <button type="submit">Salvar</button>
+</form>
+app/views/clientes/index.php
+php
+Copiar código
+<h1>Lista de Clientes</h1>
+<a href="/clientes/create">Novo Cliente</a>
+<table>
+    <tr>
+        <th>Nome</th>
+        <th>CPF/CNPJ</th>
+        <th>Telefone</th>
+        <th>E-mail</th>
+        <th>Ações</th>
+    </tr>
+    <?php foreach($clientes as $cliente): ?>
+    <tr>
+        <td><?= $cliente->nome ?></td>
+        <td><?= $cliente->cpf_cnpj ?></td>
+        <td><?= $cliente->telefone ?></td>
+        <td><?= $cliente->email ?></td>
+        <td>
+            <a href="/clientes/edit/<?= $cliente->id ?>">Editar</a>
+            <a href="/clientes/delete/<?= $cliente->id ?>">Excluir</a>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+Essa implementação inicial cobre o cadastro de clientes e veículos, com a arquitetura MVC para manter o código organizado.
