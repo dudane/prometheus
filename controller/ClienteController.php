@@ -1,44 +1,43 @@
 <?php
 // Inicia a sessão
 session_start();
-
 // Inclui o modelo de usuário
-require_once '../model/usuario.php';
-
+require_once '../model/Cliente.php';
+/*
 // Função para receber e validar os dados do formulário
 function receberDadosFormulario() {
     // Verifica se o formulário foi enviado
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $email = trim($_POST['email']);
-        $senha = trim($_POST['senha']);
-        return [$email, $senha];
+        $busca = trim($_POST['busca']);
+        return $busca;
     }
-    return [null, null]; // Retorna null se o formulário não foi enviado
+    return null; // Retorna null se o formulário não foi enviado
 }
-
+*/
 // Função para processar o login
-function processarLogin($email, $senha) {
-    
-    if (strlen($senha) < 3) {
+function buscarClientes($nome) {
+    /*if (strlen($nome) < 3) {
         $_SESSION['erro'] = "A senha deve ter no mínimo 3 caracteres.";
-        header("Location: ../view/login.php");
+        header("Location: ../view/index.php");
         exit();
-    }
-    $usuario = verificarLogin($email, $senha);
-    if ($usuario) {
+    }*/
+  //  echo "<script>alert('chegou aqui 1".$nome."');</script>";//$nome;
+    $clientes = buscarClienteDB($nome);
+    if ($clientes) {
         // O usuário foi encontrado e a senha está correta
-        $_SESSION['usuario_id'] = $usuario['id'];
-        $_SESSION['usuario_nome'] = $usuario['nome'];
-        
-        // Redireciona para a página do painel ou dashboard
+        $_SESSION['clientes'] = $clientes; 
+        // header("Location: " . $_SERVER['PHP_SELF']);
         header("Location: ../view/index.php");
         exit();
     } else {
+        /*
         // Usuário ou senha incorretos - armazena na sessão
         $_SESSION['erro'] = "E-mail ou senha incorretos.";
         
         // Redireciona de volta para a página de login
-        header("Location: ../view/login.php");
+        */
+        
+        header("Location: ../view/index.php");
         exit();
     }
 }
@@ -46,14 +45,14 @@ function processarLogin($email, $senha) {
 
 
 // Recebendo os dados do formulário
-list($email, $senha) = receberDadosFormulario();
+//list($nome) = receberDadosFormulario();
 
 // Processando o login
 //$mensagemErro = processarLogin($email, $senha);
-processarLogin($email, $senha);
+buscarClientes($_POST['busca']);
 
 // Exibindo mensagem de erro se houver
-if ($mensagemErro) {
+/*if ($mensagemErro) {
     echo $mensagemErro . " <a href='../views/login.php'>Tente novamente</a>.";
-}
+}*/
 ?>

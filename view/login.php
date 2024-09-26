@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="css/sb-admin-2.css" rel="stylesheet">
 
     <style>
         /* Centraliza a imagem na coluna usando flexbox */
@@ -28,7 +28,7 @@
         }
 
         .login-image {
-            width: 60%;
+            width: 50%;
             height: auto;
         }
 
@@ -68,7 +68,7 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Entrar no sistema</h1>
                                     </div>
-                                    <form class="user" method="POST" action="../controller/login_processo.php">
+                                    <form class="user" method="POST" action="../controller/login_processo.php"">
                                         <div class="form-group">
                                             <input type="email" class="form-control form-control-user" id="email" name="email" aria-describedby="emailHelp" placeholder="Email..." required>
                                         </div>
@@ -94,11 +94,22 @@
                                         </a>
                                         -->
                                     </form>
+                                    <script>
+                                        function validarSenha() {
+                                            /*
+                                            const senha = document.getElementById('senha').value;
+                                            if (senha.length < 3) {
+                                                alert('A senha deve ter no mínimo 3 caracteres.');
+                                                return false; // Impede o envio do formulário
+                                            }*/
+                                            return true; // Permite o envio do formulário
+                                        }
 
+                                    </script>
                                     <?php 
                                     // Exibindo mensagem de erro se houver
                                     if (isset($_SESSION['erro'])) { 
-                                        echo '<div class="alert alert-danger mt-3">' . $_SESSION['erro'] . '</div>'; 
+                                        echo '<div class="alert alert-danger mt-3" id="erroemail">' . $_SESSION['erro'] . '</div>'; 
                                         unset($_SESSION['erro']); 
                                     } 
                                     ?>

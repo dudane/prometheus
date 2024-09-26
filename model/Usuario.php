@@ -13,8 +13,6 @@ function verificarLogin($email, $senha) {
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
-    //echo "linhas afetadas".$stmt->affected_rows;
-
     // Verifica se o usuário e senha estão corretos
     if ($result->num_rows > 0) {
         $usuario = $result->fetch_assoc();
