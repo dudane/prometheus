@@ -17,8 +17,6 @@ require_once '../config/islogado.php';
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
           rel="stylesheet">
     <link href="css/sb-admin-2.css" rel="stylesheet">
-
-
 </head>
 
 <body id="page-top">
@@ -37,55 +35,79 @@ require_once '../config/islogado.php';
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
+                <form id="formCriarOrcamento">
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-4 text-gray-800">Criar Orçamento</h1>
 
-                <!-- Page Heading -->
-                <h1 class="h3 mb-4 text-gray-800">Cadastro de Orçamento</h1>
-
-                <!-- Formulário de Cadastro de Orçamento -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Preencha as informações do cliente</h6>
-                    </div>
-                    <div class="card-body">
-                        <form id="formBuscarCliente">
-                            <!-- Cliente -->
-                            <div class="form-group">
-                                <label for="cliente_nome">Cliente</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="cliente_nome" name="cliente_nome"
-                                           placeholder="Digite o nome do cliente" required>
-                                    <div class="input-group-append">
-                                        <button type="button" class="btn btn-primary" id="btnBuscarCliente">Buscar
-                                        </button>
+                    <!-- Formulário de Cadastro de Orçamento -->
+                    <!-- Cliente -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Preencha as informações do cliente</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="buscarCliente">
+                                <div class="form-group">
+                                    <label for="cliente_nome">Cliente</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="cliente_nome" name="cliente_nome"
+                                               placeholder="Digite o nome do cliente" required>
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-primary" id="btnBuscarCliente">Buscar
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
-                </div>
+                    <!-- Peças/Produtos -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Preencha as informações dos produtos</h6>
+                        </div>
+                        <div class="card-body">
+                            <!-- Peças -->
+                            <div id="buscarProduto">
+                                <div class="form-group">
+                                    <label for="cliente_nome">Peça:</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="produto_nome" name="produto_nome"
+                                               placeholder="Digite o nome de uma peça ou produto" required>
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-primary" id="btnBuscarCliente">Buscar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                <!-- Modal para listar clientes -->
-                <div class="modal fade" id="modalClientes" tabindex="-1" role="dialog"
-                     aria-labelledby="modalClientesLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalClientesLabel">Lista de Clientes</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div id="clientesResultado"></div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+
+                    <!-- Modal para listar clientes -->
+                    <div class="modal fade" id="modalClientes" tabindex="-1" role="dialog"
+                         aria-labelledby="modalClientesLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalClientesLabel">Lista de Clientes</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="clientesResultado"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
+                </form>
             </div>
+
             <!-- /.container-fluid -->
         </div>
         <!-- End of Main Content -->
@@ -144,7 +166,7 @@ require_once '../config/islogado.php';
             $('#cliente_selecionado_info').remove();
             console.log("Adicionando informações do cliente...");
 
-            $('#formBuscarCliente').after(
+            $('#buscarCliente').after(
                 `
                 <div class="row mt-3" id="cliente_selecionado_info">
                     <div class="col-md-6 form-group">
