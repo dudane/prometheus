@@ -21,38 +21,68 @@ function buscarClientes($nome) {
         header("Location: ../view/index.php");
         exit();
     }*/
-  //  echo "<script>alert('chegou aqui 1".$nome."');</script>";//$nome;
     $clientes = buscarClienteDB($nome);
     if ($clientes) {
         // O usuário foi encontrado e a senha está correta
         $_SESSION['clientes'] = $clientes; 
-        // header("Location: " . $_SERVER['PHP_SELF']);
-        header("Location: ../view/index.php");
+        header("Location: ../view/buscarClientes.php");
         exit();
     } else {
-        /*
         // Usuário ou senha incorretos - armazena na sessão
-        $_SESSION['erro'] = "E-mail ou senha incorretos.";
-        
+        // $_SESSION['erro'] = "E-mail ou senha incorretos.";
         // Redireciona de volta para a página de login
-        */
-        
-        header("Location: ../view/index.php");
+        header("Location: ../view/buscarClientes.php");
         exit();
     }
 }
 
+function buscarClienteOrcamento($nome) {
+    //echo "<script>alert('entrou aqui 9:  ".$_POST['acao']."');</script>";
+    //exit;
+    // Exemplo: Obter clientes a partir de um modelo fictício Cliente
+    $clientes = buscarClienteDB($nome);
+
+    if (!empty($clientes)) {
+        echo "<div class='card shadow mb-4'>";
+        echo "<div class='card-header py-3'>";
+        //echo "<h6 class='m-0 font-weight-bold text-primary'>Clientes</h6>";
+        echo "</div>";
+        echo "<div class='card-body'>";
+        echo "<div class='table-responsive' >";
 
 
-// Recebendo os dados do formulário
-//list($nome) = receberDadosFormulario();
 
-// Processando o login
-//$mensagemErro = processarLogin($email, $senha);
-buscarClientes($_POST['busca']);
+        echo "<table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>";
+        echo "<thead>";
+        echo "<tr>";
+        echo "<th>Nome</th>";
+        echo "<th>CPF</th>";
+        echo "<th>Telefone</th>";
+        echo "</tr>";
+        echo "</thead>";
+        echo "<tbody>";
+        foreach ($clientes as $cliente) {
+            echo "<tr>";
+            echo "<td><input type='radio' name='cliente_selecionado' value='" . $cliente['id'] . "'> " . $cliente['nome'] . "</td>";
+            echo "<td>" . $cliente['cpf_cnpj'] . "</td>";
+            echo "<td>" . $cliente['telefone'] . "</td>";
+            echo "</tr>";
+        }
+        echo "</tbody>";
+        echo "</table>";
+        echo "</div>";
+        echo "</div>";
+        echo "</div>";
+    } else {
+        echo "<p>Nenhum cliente encontrado.</p>";
+    }
+}
 
-// Exibindo mensagem de erro se houver
-/*if ($mensagemErro) {
-    echo $mensagemErro . " <a href='../views/login.php'>Tente novamente</a>.";
-}*/
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['acao']) && $_POST['acao']=="buscarClientes-buscarClientes"){
+    buscarClientes($_POST['busca']);
+}elseif($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['acao']) && $_POST['acao'] == 'cadastrarOrcamento-buscarClienteOrcamento') {
+    $nome = trim($_POST['nome']);
+    buscarClienteOrcamento($nome);
+}
 ?>

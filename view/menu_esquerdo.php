@@ -26,8 +26,56 @@
             <div class="sidebar-heading">
                 Interface
             </div>
-
+            <!-- Nav Item - Cliente Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCliente"
+                    aria-expanded="true" aria-controls="collapseCliente">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>Cliente</span>
+                </a>
+                <div id="collapseCliente" class="collapse" aria-labelledby="headingCliente" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Ações:</h6> 
+                        <a class="collapse-item" href="cliente-cadastro.html">Cadastrar</a>
+                        <a class="collapse-item" href="cliente-cadastro.html">Editar</a>
+                        <a class="collapse-item" href="buscarClientes.php">Buscar</a>
+                        <a class="collapse-item" href="cliente-relatorios.html">Relatórios de Clientes</a>
+                    </div>
+                </div>
+            </li>
+            <!-- Nav Item - Veículo Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVeiculo"
+                aria-expanded="true" aria-controls="collapseVeiculo">
+                <i class="fas fa-fw fa-car"></i>
+                <span>Veículo</span>
+                </a>
+                <div id="collapseVeiculo" class="collapse" aria-labelledby="headingVeiculo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Opções de Veículo:</h6>
+                        <a class="collapse-item" href="veiculo-page1.html">Página de Veículo 1</a>
+                        <a class="collapse-item" href="veiculo-page2.html">Página de Veículo 2</a>
+                        <a class="collapse-item" href="veiculo-page3.html">Página de Veículo 3</a>
+                    </div>
+                </div>
+            </li>
             <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrcamento"
+                   aria-expanded="true" aria-controls="collapseOrcamento">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>Orçamento</span>
+                </a>
+                <div id="collapseOrcamento" class="collapse" aria-labelledby="headingServico" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Opções de Orçamento:</h6>
+                        <a class="collapse-item" href="cadastrarOrcamento.php">Cadastrar</a>
+                        <a class="collapse-item" href="cliente-cadastro.html">Editar</a>
+                        <a class="collapse-item" href="buscarClientes.php">Buscar</a>
+                    </div>
+                </div>
+            </li>
+
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
@@ -62,23 +110,7 @@
                 </div>
             </li>
 
-            <!-- Nav Item - Cliente Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCliente"
-                    aria-expanded="true" aria-controls="collapseCliente">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>Cliente</span>
-                </a>
-                <div id="collapseCliente" class="collapse" aria-labelledby="headingCliente" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <!-- <h6 class="collapse-header">Cliente Opções:</h6> -->
-                        <a class="collapse-item" href="cliente-cadastro.html">Cadastro de Cliente</a>
-                        <a class="collapse-item" href="cliente-cadastro.html">Editar de Cliente</a>
-                        <a class="collapse-item" href="cliente-lista.html">Lista de Clientes</a>
-                        <a class="collapse-item" href="cliente-relatorios.html">Relatórios de Clientes</a>
-                    </div>
-                </div>
-            </li>
+            
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -88,22 +120,7 @@
                 Veículo
             </div>
 
-            <!-- Nav Item - Veículo Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVeiculo"
-                aria-expanded="true" aria-controls="collapseVeiculo">
-                <i class="fas fa-fw fa-car"></i>
-                <span>Veículo</span>
-                </a>
-                <div id="collapseVeiculo" class="collapse" aria-labelledby="headingVeiculo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Opções de Veículo:</h6>
-                        <a class="collapse-item" href="veiculo-page1.html">Página de Veículo 1</a>
-                        <a class="collapse-item" href="veiculo-page2.html">Página de Veículo 2</a>
-                        <a class="collapse-item" href="veiculo-page3.html">Página de Veículo 3</a>
-                    </div>
-                </div>
-            </li>
+            
             <!-- Divider -->
             <hr class="sidebar-divider">
 
@@ -136,6 +153,7 @@
             <div class="sidebar-heading">
                 Serviço
             </div>
+             <!-- Nav Item - Serviço Collapse Menu -->
 
             <!-- Nav Item - Serviço Collapse Menu -->
             <li class="nav-item">

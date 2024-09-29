@@ -50,11 +50,11 @@ require_once '../config/islogado.php';
                     </button>
 
                    <!-- Topbar Search -->
-                   <!-- 
-                   <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"  method="POST" action="../controller/ClienteController.php">
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"  method="POST" action="../controller/ClienteController.php">
                         <div class="input-group">
-                            <input type="text" id="busca" name="busca" class="form-control bg-light border-0 small" placeholder="Search forrrr..."
-                                aria-label="Search" aria-describedby="basic-addon2">
+                            <input type="text" id="busca" name="busca" class="form-control bg-light border-0 small" placeholder="Nome do cliente"
+                                aria-label="Search" aria-describedby="basic-addon2" required>
+                            <input type="hidden" id="acao" name="acao" value="buscarClientes-buscarClientes" />
                             <div class="input-group-append">
                                 <button class="btn btn-primary" type="submit">
                                     <i class="fas fa-search fa-sm"></i>
@@ -62,7 +62,6 @@ require_once '../config/islogado.php';
                             </div>
                         </div>
                     </form>
-                    -->
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
@@ -142,7 +141,49 @@ require_once '../config/islogado.php';
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <!--<h1 class="h3 mb-4 text-gray-800">Blank Page</h1>-->
+                    <h1 class="h3 mb-4 text-gray-800">Busca de clientes</h1>
+
+                    <?php 
+                    if (isset($_SESSION['clientes'])){
+                        $clientes = $_SESSION['clientes'] ?? [];
+                    
+                        echo "<!-- DataTales Example -->";
+                        echo "<div class='card shadow mb-4'>";
+                            echo "<div class='card-header py-3'>";
+                                echo "<h6 class='m-0 font-weight-bold text-primary'>Clientes</h6>";
+                            echo "</div>";
+                            echo "<div class='card-body'>";
+                                echo "<div class='table-responsive'>";
+                                    echo "<table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>";
+                                        echo "<thead>";
+                                            echo "<tr>";
+                                                echo "<th>Nome</th>";
+                                                echo "<th>CPF</th>";
+                                                echo "<th>Telefone</th>";
+                                                echo "<th>email</th>";
+                                            echo "</tr>";
+                                        echo "</thead>";
+                                        echo "<tbody>";
+                    
+                            unset($_SESSION['clientes']); // Limpa a sessão após exibir os resultados
+                            if (!empty($clientes)){
+                                foreach ($clientes as $cliente){
+                                    echo "<tr>";
+                                    echo "<td>".$cliente['nome']."</td>";
+                                    echo "<td>".$cliente['cpf_cnpj']."</td>";
+                                    echo "<td>".$cliente['telefone']."</td>";
+                                    echo "<td>".$cliente['email']."</td>";
+                                    echo "</tr>";
+                                }
+                            }
+                                        echo "</tbody>";
+                                    echo "</table>";
+                                echo "</div>";
+                            echo "</div>";
+                        echo "</div>";
+                    
+                    }
+                    ?>
 
                 </div>   
                 <!-- /.container-fluid -->
