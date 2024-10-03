@@ -75,9 +75,12 @@ require_once '../config/islogado.php';
                                         <input type="text" class="form-control" id="produto_nome" name="produto_nome"
                                                placeholder="Digite o nome de uma peça ou produto" required>
                                         <div class="input-group-append">
-                                            <button type="button" class="btn btn-primary" id="btnBuscarCliente">Buscar
+                                            <button type="button" class="btn btn-primary" id="btnBuscarProduto">Buscar
                                             </button>
                                         </div>
+
+                                        <div id="resultado"></div>
+
                                     </div>
                                 </div>
                             </div>
@@ -105,6 +108,28 @@ require_once '../config/islogado.php';
                             </div>
                         </div>
                     </div>
+
+                    <!-- Modal para listar produtos -->
+                    <div class="modal fade" id="modalProdutos" tabindex="-1" role="dialog"
+                         aria-labelledby="modalProdutosLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalProdutosLabel">Lista de Produtos</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="produtosResultado"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </form>
             </div>
 
@@ -128,6 +153,7 @@ require_once '../config/islogado.php';
 
 <script>
     $(document).ready(function () {
+        //Buscar Cliente
         $('#btnBuscarCliente').click(function () {
             const clienteNome = $('#cliente_nome').val();
             if (clienteNome) {
@@ -237,14 +263,8 @@ require_once '../config/islogado.php';
                 error: function () {
                     $('#equipamento').empty().append('<option value="">Erro ao carregar equipamentos</option>');
                 }
-
-                //////////////
-
-
             });
         });
-
-        ///////////////
         // Evento para quando o equipamento for selecionado
         $(document).on('change', '#equipamento', function () {
             console.log('Evento change disparado para #equipamento');
@@ -285,6 +305,132 @@ require_once '../config/islogado.php';
                 $('#equipamento_detalhes').remove(); // Remove os detalhes se nenhum equipamento válido for selecionado
             }
         });
+
+        //buscar produtos
+        $('#btnBuscarProduto').click(function () {
+            let produto_nome = $('#produto_nome').val();
+            $.ajax({
+                url: '../controller/ProdutoController.php',
+                type: 'POST',
+                data: {
+                    acao: 'cadastrarOrcamento-buscarProduto',
+                    produto_nome: produto_nome
+                },
+                success: function (response) {
+                    console.log(response);  // Verifica a resposta no console
+                    let resultado = $('#produtosResultado');
+                    resultado.empty();
+
+                    if (response) {
+                        try {
+                            let produtos = JSON.parse(response);
+                            console.log(produtos);  // Verifica se o JSON foi parseado corretamente
+                            if (produtos && produtos.length > 0) {
+
+                                //let tabela = '<table border="1"><tr><th>ID</th><th>Nome</th><th>Modelo/Tipo</th><th>Marca</th><th>Preço Compra</th><th>Preço Venda</th><th>Quantidade</th></tr>';
+                                let tabela =    "<div class='card shadow mb-4'>";
+
+                                tabela +=       "<div class='card-header py-3'>"+
+                                                "</div>"+
+                                                "<div class='card-body'>"+
+                                                "<div class='table-responsive' >"+
+                                                "<table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>"+
+                                                "<thead>"+
+                                                "<tr><th></th><th>Nome</th><th>Modelo/Tipo</th><th>Marca</th><th>Preço Compra</th><th>Preço Venda</th><th>Quantidade</th></tr>"+
+                                                "</thead>";
+
+                                tabela += "<tbody>";
+                                produtos.forEach(function (produto) {
+                                    tabela += `<tr>
+                                                    <td><input type='radio' name='produto_selecionado' value='${produto.id}'></td>
+                                                    <td>${produto.nome}</td>
+                                                    <td>${produto.modelo_tipo}</td>
+                                                    <td>${produto.marca}</td>
+                                                    <td>R$ ${produto.preco_compra}</td>
+                                                    <td>R$ ${produto.preco_venda}</td>
+                                                    <td>${produto.quantidade_estoque}</td>
+                                                </tr>`;
+                                });
+                                tabela +=   "</tbody>" +
+                                            "</table>" +
+                                            "</div>" +
+                                            "</div>" +
+                                            "</div>";
+                                resultado.html(tabela);
+                              //  $('#modalProdutos').modal('show');
+                            } else {
+                                resultado.html('<p>Nenhum produto encontrado.</p>');
+                               // $('#modalProdutos').modal('show');
+                            }
+                        } catch (e) {
+                            resultado.html('<p>Erro ao processar a resposta (produto) do servidor.</p>');
+                        }
+                    } else {
+                        resultado.html('<p>Nenhum produto encontrado.</p>');
+                      //  $('#modalProdutos').modal('show');
+                    }
+                    $('#modalProdutos').modal('show');
+                },
+                error: function () {
+                    $('#resultado').html('<p>Erro ao buscar o produto.</p>');
+                }
+            });
+        });
+
+
+        // Adicionar produto selecionado ao formulário principal
+        $(document).on('change', 'input[name="produto_selecionado"]', function () {
+            // Captura os dados do produto da linha selecionada
+            const produtoId = $(this).val();
+            const produtoNome = $(this).closest('tr').find('td').eq(1).text(); // Nome do produto
+            const produtoModelo = $(this).closest('tr').find('td').eq(2).text(); // Modelo/Tipo
+            const produtoMarca = $(this).closest('tr').find('td').eq(3).text(); // Marca
+            const produtoPreco = $(this).closest('tr').find('td').eq(4).text(); // Preço Venda
+
+            // Verifica se a tabela já existe ou não
+            if ($('#tabelaProdutosSelecionados').length === 0) {
+                // Se a tabela não existe, cria uma nova
+                let tabela = `
+            <div class='table-responsive'>
+                <table class='table table-bordered' id='tabelaProdutosSelecionados' width='100%' cellspacing='0'>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Modelo/Tipo</th>
+                            <th>Marca</th>
+                            <th>Preço Venda</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>${produtoNome}</td>
+                            <td>${produtoModelo}</td>
+                            <td>${produtoMarca}</td>
+                            <td>${produtoPreco}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        `;
+                // Adiciona a tabela após o elemento #buscarProduto
+                $('#buscarProduto').after(tabela);
+            } else {
+                // Se a tabela já existe, adiciona uma nova linha ao tbody
+                $('#tabelaProdutosSelecionados tbody').append(`
+            <tr>
+                <td>${produtoNome}</td>
+                <td>${produtoModelo}</td>
+                <td>${produtoMarca}</td>
+                <td>${produtoPreco}</td>
+            </tr>
+        `);
+            }
+
+            // Limpa o campo de busca e fecha o modal
+            $('#produto_nome').val('');
+            $('#modalProdutos').modal('hide');
+        });
+
 
     });
 

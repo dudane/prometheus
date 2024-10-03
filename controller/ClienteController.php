@@ -16,11 +16,13 @@ function receberDadosFormulario() {
 */
 // Função para processar o login
 function buscarClientes($nome) {
-    /*if (strlen($nome) < 3) {
-        $_SESSION['erro'] = "A senha deve ter no mínimo 3 caracteres.";
+    /*
+    if (strlen($nome) < 3){
+        $_SESSION['erro'] = "A busca deve ter no mínimo 3 caracteres.";
         header("Location: ../view/index.php");
         exit();
     }*/
+   // $nome = utf8_encode($nome);
     $clientes = buscarClienteDB($nome);
     if ($clientes) {
         // O usuário foi encontrado e a senha está correta

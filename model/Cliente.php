@@ -8,7 +8,19 @@ require_once '../config/database.php';
         $conn = conectarBanco();
     
         // Prepara a consulta SQL
-        $sql = "SELECT * FROM cliente WHERE nome LIKE '%$nome%';";  
+        //$sql = "SELECT * FROM cliente WHERE nome LIKE '%$nome%';";
+        $sql = "SELECT id,
+                        nome,
+                        cpf_cnpj,
+                        telefone,
+                        email,
+                        endereco
+                FROM cliente
+                WHERE nome LIKE '%$nome%';";
+
+       // echo $sql;
+       // exit;
+
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
