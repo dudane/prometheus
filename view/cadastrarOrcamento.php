@@ -385,7 +385,10 @@ require_once '../config/islogado.php';
             const produtoNome = $(this).closest('tr').find('td').eq(1).text(); // Nome do produto
             const produtoModelo = $(this).closest('tr').find('td').eq(2).text(); // Modelo/Tipo
             const produtoMarca = $(this).closest('tr').find('td').eq(3).text(); // Marca
-            const produtoPreco = $(this).closest('tr').find('td').eq(4).text(); // Preço Venda
+            //const produtoPreco = parseFloat($(this).closest('tr').find('td').eq(4).text().replace(',', '.')); // Preço Venda (convertido para float)
+            // Remove quaisquer caracteres não numéricos (exceto ponto e vírgula) e converte para float
+            const produtoPrecoTexto = $(this).closest('tr').find('td').eq(4).text(); // Preço Venda (em texto)
+            const produtoPreco = parseFloat(produtoPrecoTexto.replace(/[^\d,.-]/g, '').replace(',', '.'));
 
             // Verifica se a tabela já existe ou não
             if ($('#tabelaProdutosSelecionados').length === 0) {
@@ -406,9 +409,15 @@ require_once '../config/islogado.php';
                             <td>${produtoNome}</td>
                             <td>${produtoModelo}</td>
                             <td>${produtoMarca}</td>
-                            <td>${produtoPreco}</td>
+                            <td class="preco-produto">${produtoPreco.toFixed(2)}</td>
                         </tr>
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" style="text-align:right;">Total:</th>
+                            <th id="totalPreco">0.00</th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         `;
@@ -421,15 +430,28 @@ require_once '../config/islogado.php';
                 <td>${produtoNome}</td>
                 <td>${produtoModelo}</td>
                 <td>${produtoMarca}</td>
-                <td>${produtoPreco}</td>
+                <td class="preco-produto">${produtoPreco.toFixed(2)}</td>
             </tr>
         `);
             }
+
+            // Atualiza o total dos preços
+            atualizarTotalPreco();
 
             // Limpa o campo de busca e fecha o modal
             $('#produto_nome').val('');
             $('#modalProdutos').modal('hide');
         });
+
+// Função para atualizar o total dos preços
+        function atualizarTotalPreco() {
+            let total = 0;
+            $('#tabelaProdutosSelecionados .preco-produto').each(function () {
+                total += parseFloat($(this).text().replace(',', '.'));
+            });
+            $('#totalPreco').text(total.toFixed(2));
+        }
+
 
 
     });
