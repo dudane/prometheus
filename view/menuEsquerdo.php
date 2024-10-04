@@ -3,10 +3,10 @@
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
                 <div class="sidebar-brand-icon">
                     <!--<i class="fas fa-laugh-wink"></i>-->
-                    <img src="img/logo2.png" alt="" style="width: 45px; height: 50px;">
+                    <img src="img/logo2.png" alt="" style="width: 50px; height: 45px;">
 
                 </div>
-                <div class="sidebar-brand-text mx-3">Prometheus <!--<sup>2</sup>--></div>
+                <div class="sidebar-brand-text mx-3">AutoMaster <!--<sup>2</sup>--></div>
             </a>
 
             <!-- Divider -->

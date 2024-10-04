@@ -24,7 +24,7 @@ require_once '../config/islogado.php';
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <?php include 'menu_esquerdo.php' ?>
+    <?php include 'menuEsquerdo.php' ?>
     <!-- End of Sidebar -->
 
     <div id="content-wrapper" class="d-flex flex-column">
@@ -61,6 +61,7 @@ require_once '../config/islogado.php';
                             </div>
                         </div>
                     </div>
+
                     <!-- Peças/Produtos -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
@@ -331,13 +332,13 @@ require_once '../config/islogado.php';
                                 let tabela =    "<div class='card shadow mb-4'>";
 
                                 tabela +=       "<div class='card-header py-3'>"+
-                                                "</div>"+
-                                                "<div class='card-body'>"+
-                                                "<div class='table-responsive' >"+
-                                                "<table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>"+
-                                                "<thead>"+
-                                                "<tr><th></th><th>Nome</th><th>Modelo/Tipo</th><th>Marca</th><th>Preço Compra</th><th>Preço Venda</th><th>Quantidade</th></tr>"+
-                                                "</thead>";
+                                    "</div>"+
+                                    "<div class='card-body'>"+
+                                    "<div class='table-responsive' >"+
+                                    "<table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>"+
+                                    "<thead>"+
+                                    "<tr><th></th><th>Nome</th><th>Modelo/Tipo</th><th>Marca</th><th>Preço Compra</th><th>Preço Venda</th><th>Quantidade</th></tr>"+
+                                    "</thead>";
 
                                 tabela += "<tbody>";
                                 produtos.forEach(function (produto) {
@@ -352,22 +353,22 @@ require_once '../config/islogado.php';
                                                 </tr>`;
                                 });
                                 tabela +=   "</tbody>" +
-                                            "</table>" +
-                                            "</div>" +
-                                            "</div>" +
-                                            "</div>";
+                                    "</table>" +
+                                    "</div>" +
+                                    "</div>" +
+                                    "</div>";
                                 resultado.html(tabela);
-                              //  $('#modalProdutos').modal('show');
+                                //  $('#modalProdutos').modal('show');
                             } else {
                                 resultado.html('<p>Nenhum produto encontrado.</p>');
-                               // $('#modalProdutos').modal('show');
+                                // $('#modalProdutos').modal('show');
                             }
                         } catch (e) {
                             resultado.html('<p>Erro ao processar a resposta (produto) do servidor.</p>');
                         }
                     } else {
                         resultado.html('<p>Nenhum produto encontrado.</p>');
-                      //  $('#modalProdutos').modal('show');
+                        //  $('#modalProdutos').modal('show');
                     }
                     $('#modalProdutos').modal('show');
                 },
@@ -385,7 +386,6 @@ require_once '../config/islogado.php';
             const produtoNome = $(this).closest('tr').find('td').eq(1).text(); // Nome do produto
             const produtoModelo = $(this).closest('tr').find('td').eq(2).text(); // Modelo/Tipo
             const produtoMarca = $(this).closest('tr').find('td').eq(3).text(); // Marca
-            //const produtoPreco = parseFloat($(this).closest('tr').find('td').eq(4).text().replace(',', '.')); // Preço Venda (convertido para float)
             // Remove quaisquer caracteres não numéricos (exceto ponto e vírgula) e converte para float
             const produtoPrecoTexto = $(this).closest('tr').find('td').eq(4).text(); // Preço Venda (em texto)
             const produtoPreco = parseFloat(produtoPrecoTexto.replace(/[^\d,.-]/g, '').replace(',', '.'));
@@ -402,6 +402,8 @@ require_once '../config/islogado.php';
                             <th>Modelo/Tipo</th>
                             <th>Marca</th>
                             <th>Preço Venda</th>
+                            <th>Quantidade</th>
+                            <th>Subtotal</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -410,11 +412,13 @@ require_once '../config/islogado.php';
                             <td>${produtoModelo}</td>
                             <td>${produtoMarca}</td>
                             <td class="preco-produto">${produtoPreco.toFixed(2)}</td>
+                            <td><input type="number" class="quantidade-produto" value="1" min="0" style="width: 60px;"></td>
+                            <td class="subtotal-produto">${produtoPreco.toFixed(2)}</td>
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="3" style="text-align:right;">Total:</th>
+                            <th colspan="5" style="text-align:right;">Total:</th>
                             <th id="totalPreco">0.00</th>
                         </tr>
                     </tfoot>
@@ -431,6 +435,8 @@ require_once '../config/islogado.php';
                 <td>${produtoModelo}</td>
                 <td>${produtoMarca}</td>
                 <td class="preco-produto">${produtoPreco.toFixed(2)}</td>
+                <td><input type="number" class="quantidade-produto" value="1" min="0" style="width: 60px;"></td>
+                <td class="subtotal-produto">${produtoPreco.toFixed(2)}</td>
             </tr>
         `);
             }
@@ -443,14 +449,37 @@ require_once '../config/islogado.php';
             $('#modalProdutos').modal('hide');
         });
 
-// Função para atualizar o total dos preços
+        // Evento para atualizar o subtotal e o total quando a quantidade muda
+        $(document).on('input', '.quantidade-produto', function () {
+            const quantidade = parseInt($(this).val());
+            const $linha = $(this).closest('tr');
+
+            if (quantidade === 0) {
+                // Se a quantidade for 0, remove a linha da tabela
+                $linha.remove();
+            } else {
+                const precoProduto = parseFloat($linha.find('.preco-produto').text().replace(',', '.'));
+                const subtotal = quantidade * precoProduto;
+
+                // Atualiza o subtotal da linha
+                $linha.find('.subtotal-produto').text(subtotal.toFixed(2));
+            }
+
+            // Atualiza o total dos preços
+            atualizarTotalPreco();
+        });
+
+        // Função para atualizar o total dos preços
         function atualizarTotalPreco() {
             let total = 0;
-            $('#tabelaProdutosSelecionados .preco-produto').each(function () {
+            $('#tabelaProdutosSelecionados .subtotal-produto').each(function () {
                 total += parseFloat($(this).text().replace(',', '.'));
             });
             $('#totalPreco').text(total.toFixed(2));
         }
+
+
+
 
 
 

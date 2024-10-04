@@ -28,7 +28,7 @@
         }
 
         .login-image {
-            width: 50%;
+            width: 60%;
             height: auto;
         }
 
@@ -59,7 +59,7 @@
                             <!-- Coluna da imagem à esquerda -->
                             <div class="col-lg-6 d-flex align-items-center justify-content-center flex-column">
                                 <img src="img/logo_name.fw.png" alt="Login Image" class="login-image">
-                                <p class="image-text">versão 1.0</p>
+                                <p class="image-text"><strong>Simplifique a gestão, acelere o sucesso!</strong></p>
                             </div>
 
                             <!-- Coluna da direita (Formulário de login) -->
