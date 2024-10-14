@@ -16,7 +16,9 @@ require_once '../config/database.php';
                         email,
                         endereco
                 FROM cliente
-                WHERE nome LIKE '%$nome%';";
+                WHERE nome LIKE '%$nome%'
+                order by nome
+                ;";
 
        // echo $sql;
        // exit;

@@ -71,7 +71,7 @@
                         <h6 class="collapse-header">Opções de Orçamento:</h6>
                         <a class="collapse-item" href="cadastrarOrcamento.php">Cadastrar</a>
                         <a class="collapse-item" href="cliente-cadastro.html">Editar</a>
-                        <a class="collapse-item" href="buscarClientes.php">Buscar</a>
+                        <a class="collapse-item" href="buscarOrcamento.php">Buscar</a>
                     </div>
                 </div>
             </li>

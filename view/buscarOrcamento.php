@@ -49,21 +49,6 @@ require_once '../config/islogado.php';
                     <i class="fa fa-bars"></i>
                 </button>
 
-                <!-- Topbar Search -->
-                <!--
-                 <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"  method="POST" action="../controller/ClienteController.php">
-                     <div class="input-group">
-                         <input type="text" id="busca" name="busca" class="form-control bg-light border-0 small" placeholder="Nome do cliente"
-                             aria-label="Search" aria-describedby="basic-addon2" required>
-                         <input type="hidden" id="acao" name="acao" value="buscarClientes-buscarClientes" />
-                         <div class="input-group-append">
-                             <button class="btn btn-primary" type="submit">
-                                 <i class="fas fa-search fa-sm"></i>
-                             </button>
-                         </div>
-                     </div>
-                 </form>
-                 -->
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
 
@@ -103,36 +88,11 @@ require_once '../config/islogado.php';
 
                     <div class="topbar-divider d-none d-sm-block"></div>
 
-                    <!-- Nav Item - User Information -->
-                    <li class="nav-item dropdown no-arrow">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $_SESSION['usuario_nome']?></span>
-                            <img class="img-profile rounded-circle"
-                                 src="img/undraw_profile.svg">
-                        </a>
-                        <!-- Dropdown - User Information -->
-                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                             aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Profile
-                            </a>
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Settings
-                            </a>
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Activity Log
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Sair
-                            </a>
-                        </div>
-                    </li>
+                    <?php
+
+                    include 'informacoes_usuario.php'
+
+                    ?>
 
                 </ul>
 
@@ -143,69 +103,86 @@ require_once '../config/islogado.php';
             <div class="container-fluid">
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-4 text-gray-800">Busca de clientes</h1>
+                <!--<h1 class="h3 mb-4 text-gray-800">Buscar Orçamento</h1> -->
 
-                <!-- Cliente -->
+                <!-- Orcamento -->
                 <form method="POST" action="../controller/ClienteController.php">
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Preencha as informações do cliente</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Buscar Orçamento</h6>
                         </div>
                         <div class="card-body">
                             <div id="buscarCliente">
-                                <div class="form-group">
-                                    <label for="cliente_nome">Cliente</label>
-                                    <div class="input-group">
+                                <div class="form-row align-items-end">
+                                    <!-- Campo de busca do cliente -->
+                                    <div class="col-md-3">
+                                        <label for="busca">Cliente</label>
                                         <input type="text" class="form-control" id="busca" name="busca"
-                                               placeholder="Digite o nome do cliente" >
+                                               placeholder="Digite o nome do cliente">
+                                        <input type="hidden" id="acao" name="acao" value="buscarClientes-buscarClientes">
+                                    </div>
 
-                                        <input type="hidden" id="acao" name="acao" value="buscarClientes-buscarClientes" />
+                                    <!-- Campo Código do Orçamento -->
+                                    <div class="col-md-2">
+                                        <label for="codigo_orcamento">Código:</label>
+                                        <input type="text" class="form-control" id="codigo_orcamento" name="codigo_orcamento"
+                                               placeholder="Código">
+                                    </div>
 
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-primary" id="btnBuscarCliente">Buscar
-                                            </button>
-                                        </div>
+                                    <!-- Campo Data de Início -->
+                                    <div class="col-md-3">
+                                        <label for="data_inicio">Data de Início</label>
+                                        <input type="date" class="form-control" id="data_inicio" name="data_inicio">
+                                    </div>
+
+                                    <!-- Campo Data de Fim -->
+                                    <div class="col-md-3">
+                                        <label for="data_fim">Data de Fim</label>
+                                        <input type="date" class="form-control" id="data_fim" name="data_fim">
+                                    </div>
+
+                                    <!-- Botão Buscar alinhado à direita -->
+                                    <div class="col-md-1 text-right">
+                                        <button type="submit" class="btn btn-primary" id="btnBuscarCliente">Buscar</button>
                                     </div>
                                 </div>
+
                                 <?php
-                                if (isset($_SESSION['clientes'])){
+                                if (isset($_SESSION['clientes'])) {
                                     $clientes = $_SESSION['clientes'] ?? [];
 
-                                    echo "<!-- DataTales Example -->";
-                                    echo "<div class='table-responsive'>";
+                                    echo "<div class='table-responsive mt-4'>";
                                     echo "<table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>";
                                     echo "<thead>";
                                     echo "<tr>";
                                     echo "<th>Nome</th>";
                                     echo "<th>CPF</th>";
                                     echo "<th>Telefone</th>";
-                                    echo "<th>email</th>";
+                                    echo "<th>Email</th>";
                                     echo "</tr>";
                                     echo "</thead>";
                                     echo "<tbody>";
 
                                     unset($_SESSION['clientes']); // Limpa a sessão após exibir os resultados
-                                    if (!empty($clientes)){
-                                        foreach ($clientes as $cliente){
+                                    if (!empty($clientes)) {
+                                        foreach ($clientes as $cliente) {
                                             echo "<tr>";
-                                            echo "<td>".$cliente['nome']."</td>";
-                                            echo "<td>".$cliente['cpf_cnpj']."</td>";
-                                            echo "<td>".$cliente['telefone']."</td>";
-                                            echo "<td>".$cliente['email']."</td>";
+                                            echo "<td>" . $cliente['nome'] . "</td>";
+                                            echo "<td>" . $cliente['cpf_cnpj'] . "</td>";
+                                            echo "<td>" . $cliente['telefone'] . "</td>";
+                                            echo "<td>" . $cliente['email'] . "</td>";
                                             echo "</tr>";
                                         }
                                     }
                                     echo "</tbody>";
                                     echo "</table>";
-                                    "</div>";
-                                    //echo "</div>";
-                                    // echo "</div>";
-
+                                    echo "</div>";
                                 }
                                 ?>
                             </div>
                         </div>
                     </div>
+
                 </form>
             </div>
             <!-- /.container-fluid -->
@@ -234,25 +211,41 @@ require_once '../config/islogado.php';
     <i class="fas fa-angle-up"></i>
 </a>
 
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Pronto para Sair?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">x</span>
-                </button>
-            </div>
-            <div class="modal-body">Selecione "Sair" abaixo se você estiver pronto para encerrar sua sessão atual.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="logout.php">Sair</a>
-            </div>
-        </div>
-    </div>
-</div>
+<?php
+include 'logout_modal.php'
+?>
+<script>
+    $(document).ready(function () {
+        // Buscar Orcamentos
+        $('#btnBuscarOrcamento').click(function () {
+            let formData = $('#formBuscarOrcamento').serialize() + '&acao=buscarOrcamento-buscar';
+            $.ajax({
+                url: '../controller/OrcamentoController.php',
+                method: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function (response) {
+                    let resultado = $('#orcamentosResultado');
+                    resultado.empty();
+                    if (response) {
+                        try {
+                            let orcamentos = JSON.parse(response);
+
+                        } catch (e) {
+                            resultado.html('<p>Erro ao processar a resposta (serviço) do servidor.</p>');
+                        }
+                    }else{
+                        resultado.html('<p>Nenhum orçamento encontrado.</p>');
+                    }
+                },
+                error: function () {
+                    $('#orcamentosResultado').html('<p>Erro ao buscar o orçamentos.</p>');
+                }
+
+            });
+        });
+    });
+</script>
 
 <!-- Bootstrap core JavaScript-->
 <script src="vendor/jquery/jquery.min.js"></script>
@@ -266,10 +259,6 @@ require_once '../config/islogado.php';
 
 <!-- Page level plugins -->
 <script src="vendor/chart.js/Chart.min.js"></script>
-
-<!-- Page level custom scripts -->
-<script src="js/demo/chart-area-demo.js"></script>
-<script src="js/demo/chart-pie-demo.js"></script>
 
 <!-- Page level plugins -->
 <script src="vendor/datatables/jquery.dataTables.min.js"></script>

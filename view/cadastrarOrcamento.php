@@ -35,7 +35,7 @@ require_once '../config/islogado.php';
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-                <form id="formCriarOrcamento">
+                <form id="formCriarOrcamento" action="../controller/OrcamentoController.php" method="post">
                     <!-- Page Heading -->
                     <h1 class="h3 mb-4 text-gray-800">Criar Orçamento</h1>
 
@@ -140,8 +140,8 @@ require_once '../config/islogado.php';
                                                 </tr>
                                                 </thead>
                                             </table>
-                                            <div class="text-right">
-                                                <a href="#" class="btn btn-success btn-icon-split">
+                                            <div class="text-right" >
+                                                <a href="#" class="btn btn-success btn-icon-split" id="salvarOrcamento" >
                                                     <span class="icon text-white-50">
                                                         <i class="fas fa-check"></i>
                                                     </span>
@@ -220,9 +220,94 @@ require_once '../config/islogado.php';
                         </div>
                     </div>
 
+                    <!-- Modal para validar orcamento -->
+                    <div class="modal fade" id="modalValidacao" tabindex="-1" role="dialog"
+                         aria-labelledby="modalValidacaoLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalValidacaoLabel"><strong>Validação</strong></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="modalValidacaoConteudo"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal para mostrar orcamento cadastrado -->
+                    <div class="modal fade" id="modalOrcamentoCriado" tabindex="-1" role="dialog"
+                         aria-labelledby="modalOrcamentoCriadoLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalOrcamentoCriadoLabel"><strong>Orçamento Criado Com Sucesso</strong></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="modalOrcamentoCriadoConteudo">
+                                        ID do Orçamento: <span id="orcamentoId">123</span>
+
+                                        <h6><strong>Detalhes do Orçamento</strong></h6>
+                                        <ul class="list-group mb-3">
+                                            <li class="list-group-item">ID do Orçamento: <span id="orcamentoId">123</span></li>
+                                            <li class="list-group-item">Cliente: <span id="nomeCliente">Fulano de Tal</span></li>
+                                            <li class="list-group-item">Data: <span id="dataOrcamento">13/10/2024</span></li>
+                                            <li class="list-group-item">Valor Total: <span id="valorTotal">R$ 1.500,00</span></li>
+                                            <li class="list-group-item">Status: <span id="statusOrcamento">Aguardando Aprovação</span></li>
+                                        </ul>
+
+                                        <h6><strong>Produtos e Serviços</strong></h6>
+                                        <div id="itensOrcamento">
+                                            <ul class="list-group">
+                                                <li class="list-group-item">Produto: Pneu X - Quantidade: 4 - Valor: R$ 1.200,00</li>
+                                                <li class="list-group-item">Serviço: Alinhamento - Valor: R$ 300,00</li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" id="abrirOrcamento">
+                                        <i class="fas fa-folder-open"></i> Abrir Orçamento
+                                    </button>
+                                    <button type="button" class="btn btn-success" id="compartilharWhatsapp">
+                                        <i class="fab fa-whatsapp"></i> Compartilhar no WhatsApp
+                                    </button>
+                                    <button type="button" class="btn btn-info" id="copiarLink">
+                                        <i class="fas fa-copy"></i> Copiar Link
+                                    </button>
+                                    <button type="button" class="btn btn-info" id="imprimirOrcamento">
+                                        <i class="fas fa-print"></i> Imprimir
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                        <i class="fas fa-times"></i> Fechar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </form>
             </div>
+            <!-- Botão para abrir a modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalOrcamentoCriado">
+                Mostrar Modal
+            </button>
+            <!-- Script para redirecionar ao fechar a modal -->
+            <script>
+                function fechar(){
+                    //alert("apertou botao fechar");
+                }
 
+            </script>
             <!-- /.container-fluid -->
         </div>
         <!-- End of Main Content -->
@@ -305,6 +390,7 @@ require_once '../config/islogado.php';
                 <div class="row mt-3" id="cliente_selecionado_info">
                     <div class="col-md-6 form-group">
                         <label for="nome">Nome:</label>
+                        <input type="hidden" name="clienteId" value="${clienteId}">
                         <input type="text" class="form-control" id="nome" name="nome" value="${clienteNome}" readonly>
                     </div>
                     <div class="col-md-6 form-group">
@@ -391,6 +477,7 @@ require_once '../config/islogado.php';
                    <!-- <div class="row"> -->
                             <div class="col-md-6 form-group">
                                 <label for="marca">Marca:</label>
+                                <input type="hidden" name="equipamentoId" value="${equipamentoId}">
                                 <input type="text" class="form-control" id="marca" name="marca" value="${equipamento.marca}" readonly>
                             </div>
                             <div class="col-md-6 form-group">
@@ -515,11 +602,14 @@ require_once '../config/islogado.php';
                     </thead>
                     <tbody>
                         <tr>
-                            <td>${produtoNome}</td>
+                            <td><input type="hidden" name="produtoId[]" value="${produtoId}">
+                                ${produtoNome}</td>
                             <td>${produtoModelo}</td>
                             <td>${produtoMarca}</td>
-                            <td class="preco-produto">${produtoPreco.toFixed(2)}</td>
-                            <td><input type="number" class="quantidade-produto" value="1" min="0" style="width: 60px;"></td>
+                            <td class="preco-produto">
+                            <input type="hidden" name="produtoIdPrecoCobrado[]" value="${produtoPreco.toFixed(2)}">
+                            ${produtoPreco.toFixed(2)}</td>
+                            <td><input type="number" name="quantidade-produto[]" class="quantidade-produto" value="1" min="0" style="width: 60px;"></td>
                             <td class="subtotal-produto">${produtoPreco.toFixed(2)}</td>
                         </tr>
                     </tbody>
@@ -538,11 +628,15 @@ require_once '../config/islogado.php';
                 // Se a tabela já existe, adiciona uma nova linha ao tbody
                 $('#tabelaProdutosSelecionados tbody').append(`
             <tr>
-                <td>${produtoNome}</td>
+                <td>
+                <input type="hidden" name="produtoId[]" value="${produtoId}">
+                ${produtoNome}</td>
                 <td>${produtoModelo}</td>
                 <td>${produtoMarca}</td>
-                <td class="preco-produto">${produtoPreco.toFixed(2)}</td>
-                <td><input type="number" class="quantidade-produto" value="1" min="0" style="width: 60px;"></td>
+                <td class="preco-produto">
+                <input type="hidden" name="produtoIdPrecoCobrado[]" value="${produtoPreco.toFixed(2)}">
+                ${produtoPreco.toFixed(2)}</td>
+                <td><input type="number" name="quantidade-produto[]" class="quantidade-produto" value="1" min="0" style="width: 60px;"></td>
                 <td class="subtotal-produto">${produtoPreco.toFixed(2)}</td>
             </tr>
         `);
@@ -679,9 +773,13 @@ require_once '../config/islogado.php';
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>${servicoNome}</td>
-                                                <td class="preco-servico">${servicoPreco.toFixed(2)}</td>
-                                                <td><input type="number" class="quantidade-servico" value="1" min="0" style="width: 60px;"></td>
+                                                <td>
+                                                <input type="hidden" name="servicoId[]" value="${servicoId}">
+                                                ${servicoNome}</td>
+                                                <td class="preco-servico">
+                                                <input type="hidden" name="servicoIdPrecoCobrado[]" value="${servicoPreco.toFixed(2)}">
+                                                ${servicoPreco.toFixed(2)}</td>
+                                                <td><input type="number" name="quantidade-servico[]" class="quantidade-servico" value="1" min="0" style="width: 60px;"></td>
                                                 <td class="subtotal-servico">${servicoPreco.toFixed(2)}</td>
                                             </tr>
                                         </tbody>
@@ -698,9 +796,13 @@ require_once '../config/islogado.php';
             }else{
                 $('#tabelaServicosSelecionados tbody').append(
                     `<tr>
-                                                <td>${servicoNome}</td>
-                                                <td class="preco-servico">${servicoPreco.toFixed(2)}</td>
-                                                <td><input type="number" class="quantidade-servico" value="1" min="0" style="width: 60px;"></td>
+                                                <td>
+                                                <input type="hidden" name="servicoId[]" value="${servicoId}">
+                                                ${servicoNome}</td>
+                                                <td class="preco-servico">
+                                                <input type="hidden" name="servicoIdPrecoCobrado[]" value="${servicoPreco.toFixed(2)}">
+                                                ${servicoPreco.toFixed(2)}</td>
+                                                <td><input type="number" name="quantidade-servico[]" class="quantidade-servico" value="1" min="0" style="width: 60px;"></td>
                                                 <td class="subtotal-servico">${servicoPreco.toFixed(2)}</td>
                                             </tr>`
                 );
@@ -761,6 +863,167 @@ require_once '../config/islogado.php';
             //$('#resumoOrcamento th:contains("Valor Total")').next().text(`R$ ${valorTotal.toFixed(2).replace('.', ',')}`);
             $('#resumoOrcamento th:contains("Valor Total")').next().text(`R$ ${valorTotal.toFixed(2)}`);
         }
+
+        /*
+        $('#salvarOrcamento').click(function (event) {
+            // Chama validateForm e verifica se a validação foi bem-sucedida
+            if (validateForm(event)) {
+                // Se a validação passar, envie o formulário
+                // Aqui você pode chamar o método para enviar o formulário, como:
+                $('#formCriarOrcamento').submit(); // Substitua #seuFormulario pelo ID do seu formulário
+
+                // Atualiza o conteúdo do modal
+                let modalOrcamento = $('#modalOrcamentoCriadoConteudo');
+                modalOrcamento.html();
+
+                // Exibe o modal
+                $('#modalOrcamentoCriado').modal('show');
+
+
+            }
+        });
+        */
+
+        $('#salvarOrcamento').click(function (event) {
+            event.preventDefault(); // Evita a submissão padrão do formulário
+
+            if (validateForm(event)) {
+                // Coleta os dados do formulário
+                let formData = $('#formCriarOrcamento').serialize() + '&acao=cadastrarOrcamento-cadastrar';
+                console.log(formData);
+
+                // Faz uma requisição AJAX para enviar os dados e receber o JSON
+                $.ajax({
+                    url: '../controller/OrcamentoController.php', // URL do seu PHP
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function (response) {
+                       alert("Chegou aqui: ");
+                        if (response.error) {
+                            alert('Erro: ' + response.error);
+                        } else {
+                            // Atualiza o conteúdo do modal com o ID do orçamento
+
+                            $('#modalOrcamentoCriadoConteudo').html(`Orçamento criado com sucesso! ID:<span id="orcamentoId">${response}</pan>`);
+                            // Exibe o modal
+                            $('#modalOrcamentoCriado').modal('show');
+
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Erro na requisição:', error);
+                        alert('Erro ao criar o orçamento. Tente novamente.');
+                    }
+                });
+            }
+        });
+
+
+        // Adicionar evento de validação ao formulário
+        //document.querySelector('form').addEventListener('submit', validateForm);
+        function validateForm(event) {
+            let clienteId = 0, equipamentoId = 0;
+            // Obtém o valor do clienteId
+            if (document.querySelector('input[name="clienteId"]') !== null) {
+                clienteId = document.querySelector('input[name="clienteId"]').value;
+            }
+
+            // Obtém o valor do equipamentoId
+            if (document.querySelector('input[name="equipamentoId"]') !== null) {
+                equipamentoId = document.querySelector('input[name="equipamentoId"]').value;
+            }
+            if (document.querySelector('input[name="produtoId"]') !== null) {
+                const hiddenInputs = document.querySelectorAll('input[name="produtoId"]');
+                const qtdProdutos = document.querySelectorAll('input[name="quantidade-produto"]');
+                // Cria um array para armazenar os valores
+                const produtosIds = [];
+                const quantidades = [];
+                // Itera pelos inputs e armazena os valores no array
+                hiddenInputs.forEach(input => {
+                    produtosIds.push(input.value);
+                });
+                qtdProdutos.forEach(input => {
+                    quantidades.push(input.value);
+                });
+
+                // Exibe os valores no console
+                console.log("Produtos:" +produtosIds+"\nQuantidades: "+quantidades);
+            }
+
+            let messages = [];
+
+            // Verifica se o clienteId é 0 e adiciona a mensagem correspondente
+            if (clienteId === 0) {
+                messages.push("- Cliente");
+            }
+            // Verifica se o equipamentoId é 0 e adiciona a mensagem correspondente
+            if (equipamentoId === 0) {
+                messages.push("- Veículo");
+            }
+
+            // Se houver mensagens de erro, adicione a mensagem inicial e mostre o modal
+            if (messages.length > 0) {
+                // Adiciona a mensagem inicial antes das mensagens de erro
+                let mensagemInicial = "Para criar um orçamento, os campos abaixo devem ser preenchidos:";
+                messages.unshift(mensagemInicial); // Insere a mensagem no início do array
+
+                // Atualiza o conteúdo do modal
+                let modalValidacao = $('#modalValidacaoConteudo');
+                modalValidacao.html(messages.join('<br>')); // Une as mensagens com <br> para quebras de linha
+
+                // Exibe o modal
+                $('#modalValidacao').modal('show');
+
+                return false; // Retorna false para indicar que a validação falhou
+            }
+            return true; // Retorna true para indicar que a validação foi bem-sucedida
+        }
+
+        //Funcionalidades da Modal do orcamento criado com sucesso.
+        // Exemplo de ID dinâmico de orçamento
+        let orcamentoId = $('#orcamentoId').text();
+        let urlOrcamento = `https://meusite.com/orcamento.php?id=${orcamentoId}`;
+
+        // Redirecionar para a página do orçamento
+        $('#abrirOrcamento').click(function () {
+            window.location.href = urlOrcamento;
+        });
+
+        // Compartilhar no WhatsApp
+        $('#compartilharWhatsapp').click(function () {
+            let mensagem = `Confira o orçamento criado! Acesse: ${urlOrcamento}`;
+            let url = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
+            window.open(url, '_blank');
+        });
+
+        // Copiar link para a área de transferência
+        $('#copiarLink').click(function () {
+            navigator.clipboard.writeText(urlOrcamento).then(() => {
+                alert('Link copiado para a área de transferência!');
+            }).catch(err => {
+                console.error('Erro ao copiar link:', err);
+            });
+        });
+
+        // Ação do botão Imprimir
+        $('#imprimirOrcamento').click(function () {
+            let printContent = document.querySelector('.modal-content').innerHTML;
+            let printWindow = window.open('', '', 'width=800,height=600');
+            printWindow.document.write('<html><head><title>Imprimir Orçamento</title></head><body>');
+            printWindow.document.write(printContent);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        });
+
+        // Redirecionar para index.php ao fechar a modal
+        $('#modalOrcamentoCriado').on('hidden.bs.modal', function () {
+            window.location.href = 'index.php';
+        });
+
+
+
     });
 </script>
 

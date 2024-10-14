@@ -54,6 +54,6 @@ processarLogin($email, $senha);
 
 // Exibindo mensagem de erro se houver
 if ($mensagemErro) {
-    echo $mensagemErro . " <a href='../views/login.php'>Tente novamente</a>.";
+    echo $mensagemErro . " <a href='../view/login.php'>Tente novamente</a>.";
 }
 ?>
