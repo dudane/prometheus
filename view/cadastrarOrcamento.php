@@ -37,7 +37,7 @@ require_once '../config/islogado.php';
             <div class="container-fluid">
                 <form id="formCriarOrcamento" action="../controller/OrcamentoController.php" method="post">
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-4 text-gray-800">Criar Orçamento</h1>
+                    <h1 class="h3 mb-4 text-black" style="color: black">Criar Orçamento</h1>
 
                     <!-- Formulário de Cadastro de Orçamento -->
                     <!-- Cliente -->
@@ -48,7 +48,7 @@ require_once '../config/islogado.php';
                         <div class="card-body">
                             <div id="buscarCliente">
                                 <div class="form-group">
-                                    <label for="cliente_nome">Cliente</label>
+                                    <label for="cliente_nome" class="text-black" style="color: black">Cliente</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control" id="cliente_nome" name="cliente_nome"
                                                placeholder="Digite o nome do cliente" required>
@@ -59,6 +59,7 @@ require_once '../config/islogado.php';
                                     </div>
                                 </div>
                             </div>
+                            <div id="clienteEscolhido"></div>
                         </div>
                     </div>
 
@@ -387,7 +388,7 @@ require_once '../config/islogado.php';
 
             $('#buscarCliente').after(
                 `
-                <div class="row mt-3" id="cliente_selecionado_info">
+                <div class="row mt-3" id="cliente_selecionado_info" style="display: none;">
                     <div class="col-md-6 form-group">
                         <label for="nome">Nome:</label>
                         <input type="hidden" name="clienteId" value="${clienteId}">
@@ -417,6 +418,8 @@ require_once '../config/islogado.php';
 
                 `
             );
+            // Aplicar o efeito fadeIn após adicionar ao DOM
+            $('#cliente_selecionado_info').fadeIn();
             $('#cliente_nome').val(''); // Limpa o campo de busca
             $('#cliente_selecionado_info').addClass('cliente-selecionado'); // Adiciona a classe CSS
             // Fecha o modal
@@ -588,7 +591,7 @@ require_once '../config/islogado.php';
             if ($('#tabelaProdutosSelecionados').length === 0) {
                 // Se a tabela não existe, cria uma nova
                 let tabela = `
-            <div class='table-responsive'>
+            <div class='table-responsive' id="tabelaProdutos" style="display: none;">
                 <table class='table table-bordered' id='tabelaProdutosSelecionados' width='100%' cellspacing='0'>
                     <thead>
                         <tr class='bg-gray-600 text-white'>
@@ -624,6 +627,7 @@ require_once '../config/islogado.php';
         `;
                 // Adiciona a tabela após o elemento #buscarProduto
                 $('#buscarProduto').after(tabela);
+                $('#tabelaProdutos').fadeIn(1000);
             } else {
                 // Se a tabela já existe, adiciona uma nova linha ao tbody
                 $('#tabelaProdutosSelecionados tbody').append(`
@@ -913,7 +917,6 @@ require_once '../config/islogado.php';
                     },
                     error: function (xhr, status, error) {
                         console.error('Erro na requisição:', error);
-                        alert('Erro ao criar o orçamento. Tente novamente.');
                     }
                 });
             }

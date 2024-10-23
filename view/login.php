@@ -74,6 +74,7 @@
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user" id="senha" name="senha" placeholder="Senha" required>
+                                            <input type="hidden" name="id_empresa" id="id_empresa" value="1">
                                         </div>
                                         <div class="form-group">
                                             <div class="custom-control custom-checkbox small">

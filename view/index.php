@@ -82,7 +82,35 @@ require_once '../config/islogado.php';
                          </div>
                      </div>
                  </form>
+
                  -->
+
+                <style>
+                    .centralizado {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+                    }
+                </style>
+
+                <!-- Exibição do Logo e Nome da Empresa -->
+                <?php if (isset($_SESSION['empresa'])): ?>
+                    <div class="centralizado">
+                        <img src="<?php echo $_SESSION['empresa']['logo']; ?>"
+                             alt="Logo da Empresa"
+                             style="height: 50px; width: auto; margin-right: 10px;">
+                        <span class="font-weight-bold text-gray-900" style="font-size: 20px;">
+            <?php echo $_SESSION['empresa']['nome']; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="alert alert-warning" role="alert">
+                        Nenhuma empresa cadastrada!
+                    </div>
+                <?php endif; ?>
+
+
+
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
 
@@ -174,37 +202,37 @@ require_once '../config/islogado.php';
                     </div>
                     <div class="card-body">
                         <!-- Page Heading -->
-                        <!--<h1 class="h3 mb-4 text-gray-800">Blank Page</h1>-->
-                        <!-- Video Section -->
-                        <!--
-                        <div class="video-container">
-                            <video autoplay muted loop class="responsive-video">
-                                <source src="img/automasterAnimation.webm" type="video/webm">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                        -->
-                    </div>
+                <!--<h1 class="h3 mb-4 text-gray-800">Blank Page</h1>-->
+                <!-- Video Section -->
+                <!--
+                <div class="video-container">
+                    <video autoplay muted loop class="responsive-video">
+                        <source src="img/automasterAnimation.webm" type="video/webm">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
                 -->
             </div>
-            <!-- /.container-fluid -->
-
         </div>
-        <!-- End of Main Content -->
-
-        <!-- Footer -->
-        <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Your Website 2021</span>
-                </div>
-            </div>
-        </footer>
-        <!-- End of Footer -->
-
+        -->
     </div>
-    <!-- End of Content Wrapper -->
+    <!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
+
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Your Website 2021</span>
+        </div>
+    </div>
+</footer>
+<!-- End of Footer -->
+
+</div>
+<!-- End of Content Wrapper -->
 
 </div>
 <!-- End of Page Wrapper -->

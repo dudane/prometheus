@@ -106,84 +106,61 @@ require_once '../config/islogado.php';
                 <!--<h1 class="h3 mb-4 text-gray-800">Buscar Orçamento</h1> -->
 
                 <!-- Orcamento -->
-                <form method="POST" action="../controller/ClienteController.php">
+                <form id="formBuscarOrcamento" method="POST" >
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Buscar Orçamento</h6>
                         </div>
                         <div class="card-body">
-                            <div id="buscarCliente">
-                                <div class="form-row align-items-end">
-                                    <!-- Campo de busca do cliente -->
-                                    <div class="col-md-3">
-                                        <label for="busca">Cliente</label>
-                                        <input type="text" class="form-control" id="busca" name="busca"
-                                               placeholder="Digite o nome do cliente">
-                                        <input type="hidden" id="acao" name="acao" value="buscarClientes-buscarClientes">
-                                    </div>
-
-                                    <!-- Campo Código do Orçamento -->
-                                    <div class="col-md-2">
-                                        <label for="codigo_orcamento">Código:</label>
-                                        <input type="text" class="form-control" id="codigo_orcamento" name="codigo_orcamento"
-                                               placeholder="Código">
-                                    </div>
-
-                                    <!-- Campo Data de Início -->
-                                    <div class="col-md-3">
-                                        <label for="data_inicio">Data de Início</label>
-                                        <input type="date" class="form-control" id="data_inicio" name="data_inicio">
-                                    </div>
-
-                                    <!-- Campo Data de Fim -->
-                                    <div class="col-md-3">
-                                        <label for="data_fim">Data de Fim</label>
-                                        <input type="date" class="form-control" id="data_fim" name="data_fim">
-                                    </div>
-
-                                    <!-- Botão Buscar alinhado à direita -->
-                                    <div class="col-md-1 text-right">
-                                        <button type="submit" class="btn btn-primary" id="btnBuscarCliente">Buscar</button>
-                                    </div>
+                            <div class="form-row align-items-end">
+                                <!-- Campo de busca do cliente -->
+                                <div class="col-md-3">
+                                    <label for="busca">Cliente</label>
+                                    <input type="text" class="form-control" id="nome_cliente" name="nome_cliente"
+                                           placeholder="Digite o nome do cliente">
                                 </div>
 
-                                <?php
-                                if (isset($_SESSION['clientes'])) {
-                                    $clientes = $_SESSION['clientes'] ?? [];
+                                <!-- Campo Código do Orçamento -->
+                                <div class="col-md-2">
+                                    <label for="codigo_orcamento">Código:</label>
+                                    <input type="text" class="form-control" id="codigo_orcamento" name="codigo_orcamento"
+                                           placeholder="Código">
+                                </div>
 
-                                    echo "<div class='table-responsive mt-4'>";
-                                    echo "<table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>";
-                                    echo "<thead>";
-                                    echo "<tr>";
-                                    echo "<th>Nome</th>";
-                                    echo "<th>CPF</th>";
-                                    echo "<th>Telefone</th>";
-                                    echo "<th>Email</th>";
-                                    echo "</tr>";
-                                    echo "</thead>";
-                                    echo "<tbody>";
+                                <!-- Campo Data de Início -->
+                                <div class="col-md-3">
+                                    <label for="data_inicio">Data de Início</label>
+                                    <input type="date" class="form-control" id="data_inicio" name="data_inicio">
+                                </div>
 
-                                    unset($_SESSION['clientes']); // Limpa a sessão após exibir os resultados
-                                    if (!empty($clientes)) {
-                                        foreach ($clientes as $cliente) {
-                                            echo "<tr>";
-                                            echo "<td>" . $cliente['nome'] . "</td>";
-                                            echo "<td>" . $cliente['cpf_cnpj'] . "</td>";
-                                            echo "<td>" . $cliente['telefone'] . "</td>";
-                                            echo "<td>" . $cliente['email'] . "</td>";
-                                            echo "</tr>";
-                                        }
-                                    }
-                                    echo "</tbody>";
-                                    echo "</table>";
-                                    echo "</div>";
-                                }
-                                ?>
+                                <!-- Campo Data de Fim -->
+                                <div class="col-md-3">
+                                    <label for="data_fim">Data de Fim</label>
+                                    <input type="date" class="form-control" id="data_fim" name="data_fim">
+                                </div>
+
+                                <!-- Botão Buscar alinhado à direita -->
+                                <div class="col-md-1 text-right">
+                                    <button type="submit" class="btn btn-primary" id="btnBuscarOrcamento">Buscar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                 </form>
+
+                <div id="cardResultados" class="card shadow mb-4" style="display: none;">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Orçamentos Encontrados</h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="orcamentosResultado">
+
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
             <!-- /.container-fluid -->
 
@@ -214,38 +191,7 @@ require_once '../config/islogado.php';
 <?php
 include 'logout_modal.php'
 ?>
-<script>
-    $(document).ready(function () {
-        // Buscar Orcamentos
-        $('#btnBuscarOrcamento').click(function () {
-            let formData = $('#formBuscarOrcamento').serialize() + '&acao=buscarOrcamento-buscar';
-            $.ajax({
-                url: '../controller/OrcamentoController.php',
-                method: 'POST',
-                data: formData,
-                dataType: 'json',
-                success: function (response) {
-                    let resultado = $('#orcamentosResultado');
-                    resultado.empty();
-                    if (response) {
-                        try {
-                            let orcamentos = JSON.parse(response);
 
-                        } catch (e) {
-                            resultado.html('<p>Erro ao processar a resposta (serviço) do servidor.</p>');
-                        }
-                    }else{
-                        resultado.html('<p>Nenhum orçamento encontrado.</p>');
-                    }
-                },
-                error: function () {
-                    $('#orcamentosResultado').html('<p>Erro ao buscar o orçamentos.</p>');
-                }
-
-            });
-        });
-    });
-</script>
 
 <!-- Bootstrap core JavaScript-->
 <script src="vendor/jquery/jquery.min.js"></script>
@@ -265,6 +211,97 @@ include 'logout_modal.php'
 <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 <!-- Page level custom scripts -->
 <script src="js/demo/datatables-demo.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Garantir que o spinner e os resultados estejam ocultos no carregamento
+        $('#cardResultados').hide();
+        // Interceptar o evento de submit do formulário
+        $('#formBuscarOrcamento').submit(function (event) {
+            event.preventDefault();  // Evita o recarregamento da página
+
+            let formData = $(this).serialize() + '&acao=buscarOrcamento-buscar';
+
+            $('#cardResultados').fadeOut(); // Esconder resultados anteriores
+
+            console.log(formData);
+
+            $.ajax({
+                url: '../controller/OrcamentoController.php',
+                method: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function (response) {
+                    let resultado = $('#orcamentosResultado');
+                    resultado.empty();  // Limpa qualquer mensagem anterior
+
+                    if (Array.isArray(response) && response.length > 0) {
+                        let tabela = `
+                            <div class='card shadow mb-4'>
+                                <div class='card-header py-3'></div>
+                                <div class='card-body'>
+                                    <div class='table-responsive'>
+                                        <table class='table table-bordered' id='dataTable' width='100%' cellspacing='0'>
+                                            <thead>
+                                                <tr class='bg-gray-600 text-white'>
+                                                    <th>ID</th><th>Cliente</th><th>Veículo</th><th>Data Criação</th>
+                                                    <th>Status</th><th>Peças</th><th>Serviços</th><th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>`;
+
+                        response.forEach(function (orcamento) {
+                            tabela += `
+                                <tr>
+                                    <td><a href="detalhesOrcamento.php?codigo_orcamento=${orcamento.codigo_orcamento}" >
+                                    ${orcamento.codigo_orcamento}
+                                    </a></td>
+                                    <td>
+                                    <a href="detalhesOrcamento.php?codigo_orcamento=${orcamento.codigo_orcamento}" >
+                                    ${orcamento.nome_cliente}
+                                    </a>
+                                    </td>
+                                    <td>${orcamento.equipamento_marca} ${orcamento.equipamento_modelo} </td>
+                                    <td>${orcamento.data_criacao}</td>
+                                    <td>${orcamento.orcamento_status}</td>
+                                    <td>R$ ${orcamento.total_pecas}</td>
+                                    <td>R$ ${orcamento.total_servicos}</td>
+                                    <td>R$ ${orcamento.valor_total}</td>
+                                </tr>`;
+                        });
+
+                        tabela += `
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>`;
+
+                        resultado.html(tabela);
+                    } else {
+                        resultado.html('<p class="alert alert-warning">Nenhum orçamento encontrado.</p>');
+                    }
+                    // Exibir a div com resultados e ocultar o spinner
+                    $('#cardResultados').fadeIn();
+                },
+                error: function (xhr, status, error) {
+                    let resultado = $('#orcamentosResultado');
+                    resultado.empty();  // Limpa conteúdo anterior
+                    resultado.html(`
+                        <p class="alert alert-danger">
+                            Erro ao buscar orçamentos. Por favor, tente novamente mais tarde.
+                        </p>
+                    `);
+                    console.error(`Erro: ${error}. Status: ${status}`);
+                    // Ocultar o spinner em caso de erro
+                }
+            });
+        });
+    });
+</script>
+
+
+
 
 </body>
 
